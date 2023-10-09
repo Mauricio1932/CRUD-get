@@ -8,4 +8,7 @@ abstract class UserRepository {
   // Future<String> getAuthToken();
   // Future<List<UserCreate>> userCreate(UserCreate user);
   Future<List<User>> getUsers();
+  Future<List<User>> userCreate(User user);
+  Future<List<User>> deleteUser(User user);
+  Future<List<User>> updateUser(User user);
 }

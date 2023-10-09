@@ -1,25 +1,21 @@
-// import 'package:localeats/features/user/domain/entities/login.dart';
-
-// import '../repository/login_repository.dart';
-
 import 'package:bloc_use/user/domain/entities/user.dart';
 import 'package:bloc_use/user/domain/repository/user_repository.dart';
 
-class UserUsecase {
+class UpdateUserUsecase {
   final UserRepository userRepository;
 
-  UserUsecase(this.userRepository);
+  UpdateUserUsecase(this.userRepository);
 
-  Future<List<User>> execute() async {
-    // return await userRepository.getUsers();
+  Future<List<User>> execute(User user) async {
+    print("metodod usdate");
     try {
       // Llama al repositorio para obtener la lista de locales
-      final locales = await userRepository.getUsers();
+      final locales = await userRepository.updateUser(user);
 
       if (locales.isNotEmpty) {
         return locales; // Devuelve la lista de locales
       } else {
-        throw Exception('La lista de locales está vacía');
+        throw Exception('La lista de users está vacía');
       }
     } catch (e) {
       print('Error al obtener users: $e');

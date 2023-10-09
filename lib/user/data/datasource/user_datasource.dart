@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 import 'dart:convert';
 
-// import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -17,6 +17,9 @@ import '../models/user_model.dart';
 
 abstract class UserDataSource {
   Future<List<User>> getUsers();
+  Future<List<User>> userCreate(user);
+  Future<List<User>> deleteUser(user);
+  Future<List<User>> updateUser(user);
 }
 
 class ApiUserDatasourceImp implements UserDataSource {
@@ -30,9 +33,9 @@ class ApiUserDatasourceImp implements UserDataSource {
   final String userUrl = 'https://jsonplaceholder.typicode.com/posts';
 
   final String getUser = 'http://localhost:3000/api/user/viewAll';
-  final String userCreate ='http://localhost:3000/api/user/createUser';
-  final String deleteuser ='http://localhost:3000/api/user/delete';
-  final String updateuser ='http://localhost:3000/api/user/update';
+  final String userCreateUrl = 'http://localhost:3000/api/user/createUser';
+  final String deleteuserUrl = 'http://localhost:3000/api/user/delete?id=';
+  final String updateuserUrl = 'http://localhost:3000/api/user/update?id=';
   // final Dio dio = Dio();
   // late SharedPreferences sharedPreferences;
 
@@ -77,74 +80,81 @@ class ApiUserDatasourceImp implements UserDataSource {
   Future<void> isInternrtConnect() async {
     isInternetConnect.value = await InternetConnectionChecker().hasConnection;
   }
-  // @override
-  // Future<List<UserLoginModel>> login(User user) async {
-  //   Response response;
 
-  //   try {
-  //     response = await dio.post(
-  //       apiUrl,
-  //       data: {
-  //         'username': user.username,
-  //         'password': user.password,
-  //       },
-  //     );
-  //   } catch (e) {
-  //     print("Error: $e");
-  //     throw Exception("Failed to log in");
-  //   }
+  @override
+  Future<List<User>> userCreate(user) async {
+    final response;
+    Dio dio = Dio();
+    try {
+      response = await dio.post(
+        userCreateUrl,
+        data: {
+          'nombre': user.nombre,
+          'apellido': user.apellido,
+        },
+      );
+    } catch (e) {
+      print("Error: $e");
+      throw Exception("Failed to log in");
+    }
 
-  //   if (response.statusCode == 200) {
-  //     print("Status 200 OK");
-  //     final token = response.data['token'];
-  //     await saveAuthToken(token);
+    if (response.statusCode == 200) {
+      print("Status 200 OK");
 
-  //     return token; // Ahora el tipo de retorno es String
-  //   } else {
-  //     print("Error en el login, estado: ${response.statusCode}");
-  //     throw Exception('Failed to log in');
-  //   }
-  // }
+      return response.data; // Ahora el tipo de retorno es String
+    } else {
+      print("Error en el login, estado: ${response.statusCode}");
+      throw Exception('Failed to log in');
+    }
+  }
 
-  // Future<void> saveAuthToken(String token) async {
-  //   final SharedPreferences sharedPreferences =
-  //       await SharedPreferences.getInstance();
+  @override
+  Future<List<User>> updateUser(user) async {
+    print("funcion put");
+    final response;
+    Dio dio = Dio();
+    try {
+      response = await dio.put(
+        '$updateuserUrl${user.id}',
+        data: {
+          'nombre': user.nombre,
+          'apellido': user.apellido,
+        },
+      );
+    } catch (e) {
+      print("Error: $e");
+      throw Exception("Failed to log in");
+    }
 
-  //   // Guardar el token en 'auth_token'
-  //   await sharedPreferences.setString('auth_token', token);
+    if (response.statusCode == 200) {
+      print("Status 200 OK");
 
-  //   // Puedes imprimir el token para verificar que se haya guardado correctamente
-  //   print("Token guardado: $token");
-  // }
+      return response.data; // Ahora el tipo de retorno es String
+    } else {
+      print("Error en el login, estado: ${response.statusCode}");
+      throw Exception('Failed to log in');
+    }
+  }
 
-  // @override
-  // Future<List<CreateUserLoginModel>> userCreate(UserCreate user) async {
-  //   Response response;
+  @override
+  Future<List<User>> deleteUser(user) async {
+    print("delete data source $deleteuserUrl${user.id}");
+    final response;
+    Dio dio = Dio();
+    try {
+      response = await dio.delete('$deleteuserUrl${user.id}');
+    } catch (e) {
+      print("Error: $e");
+      throw Exception("Failed to Delete");
+    }
 
-  //   try {
-  //     response = await dio.post(
-  //       userUrl,
-  //       data: {
-  //         'username': user.username,
-  //         'password': user.password,
-  //         'email': user.email,
-  //       },
-  //     );
-  //   } catch (e) {
-  //     print("Error: $e");
-  //     throw Exception("Failed to log in");
-  //   }
+    if (response.statusCode == 200) {
+      print("Status 200 OK");
 
-  //   if (response.statusCode == 200) {
-  //     print("Status 201 OK");
-  //     // final token = response.data['token'];
-
-  //     // await saveAuthToken(token);
-
-  //     return response.data; // Ahora el tipo de retorno es String
-  //   } else {
-  //     print("Error en el login, estado: ${response.statusCode}");
-  //     throw Exception('Failed to log in');
-  //   }
-  // }
+      return response.data; // Ahora el tipo de retorno es String
+    } else {
+      print("Error al eliminar, estado: ${response.statusCode}");
+      throw Exception('Failed to log in');
+    }
+  }
 }

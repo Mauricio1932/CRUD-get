@@ -1,23 +1,33 @@
+import 'package:bloc_use/user/domain/usecase/create_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../domain/usecase/delete_user_usecase.dart';
 import '../../../domain/usecase/getusers_usecase.dart';
+import '../../../domain/usecase/updte_user_usecase.dart';
 import 'user_event.dart';
 import 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserUsecase userUsecase;
+  final CreateUserUsecase createUserUsecase;
+  final DeleteUserUseCase deleteUserUseCase;
+  final UpdateUserUsecase updateUserUsecase;
 
-  UserBloc(this.userUsecase) : super(const UserState()) {
+  UserBloc(this.userUsecase, this.createUserUsecase, this.deleteUserUseCase, this.updateUserUsecase,)
+      : super(const UserState()) {
     on<GetUserRequest>(_handleLocalesRecuested);
     on<ViewUser>(_handleviewuser);
     on<RemoveViewUser>(_handleRemoveuser);
+
+    on<CreateNewUser>(_handleCreateUser);
+    on<DeleteUser>(_handleDeleteUser);
+    on<UpdteUser>(_handleUpdateUser);
   }
 
   Future<void> _handleLocalesRecuested(
     event,
     Emitter<UserState> emit,
   ) async {
-    print("se esta ejevutando bloc");
     try {
       emit(state.copyWith(
         usersStatus: UserRequest.requestInProgress,
@@ -43,7 +53,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     event,
     Emitter<UserState> emit,
   ) async {
-    print("id ${event.userId}");
     emit(
       state.copyWith(
         userId: {event.userId},
@@ -62,5 +71,80 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         usersStatus: null,
       ),
     );
+  }
+
+  Future<void> _handleCreateUser(
+    event,
+    Emitter<UserState> emit,
+  ) async {
+    print("se ejeuto");
+    try {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestInProgress,
+      ));
+
+      final response = await createUserUsecase.execute(event.user);
+
+      emit(
+        state.copyWith(
+          usersStatus: UserRequest.requestSuccess,
+          users: response,
+        ),
+      );
+    } catch (error) {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestFailure,
+      ));
+    }
+  }
+  
+  Future<void> _handleUpdateUser(
+    event,
+    Emitter<UserState> emit,
+  ) async {
+    print("se ejeuto update HAndle");
+    try {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestInProgress,
+      ));
+
+      final response = await updateUserUsecase.execute(event.user);
+
+      emit(
+        state.copyWith(
+          usersStatus: UserRequest.requestSuccess,
+          users: response,
+        ),
+      );
+    } catch (error) {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestFailure,
+      ));
+    }
+  }
+
+  Future<void> _handleDeleteUser(
+    event,
+    Emitter<UserState> emit,
+  ) async {
+    print("se ejecuto delete");
+    try {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestInProgress,
+      ));
+
+      final response = await deleteUserUseCase.execute(event.user);
+
+      emit(
+        state.copyWith(
+          usersStatus: UserRequest.requestSuccess,
+          users: response,
+        ),
+      );
+    } catch (error) {
+      emit(state.copyWith(
+        usersStatus: UserRequest.requestFailure,
+      ));
+    }
   }
 }

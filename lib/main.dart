@@ -12,8 +12,10 @@ import 'user/presentation/bloc/bloc/user_bloc.dart';
 import 'user_usecase_config.dart';
 // import 'view/home_view.dart';
 
-
 UseCaseUserConfig useCaseUserConfig = UseCaseUserConfig();
+UseCaseUserConfig createUserUsecase = UseCaseUserConfig();
+UseCaseUserConfig deleteUserUseCase = UseCaseUserConfig();
+UseCaseUserConfig updateUserUsecase = UseCaseUserConfig();
 
 void main() {
   runApp(const MyApp());
@@ -27,9 +29,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => UserBloc(useCaseUserConfig.userUsecase!)
+          create: (BuildContext context) => UserBloc(
+            useCaseUserConfig.userUsecase!,
+            useCaseUserConfig.createUserUsecase!,
+            useCaseUserConfig.deleteUserUseCase!,
+            useCaseUserConfig.updateUserUsecase!,
+          ),
         ),
-
       ],
       child: MaterialApp(
         title: 'Flutter Fetch Data using Dio',

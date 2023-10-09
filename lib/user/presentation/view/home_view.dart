@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:bloc_use/user/presentation/view/add_new_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -72,6 +73,28 @@ class _HomeViewState extends State<HomeView> {
           // );
           // },
           ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SlideTransition(
+                  position: Tween(
+                    begin: const Offset(0, 1),
+                    end: Offset.zero,
+                  ).animate(animation), // Agrega ".animate(animation)" aquí
+                  child: child,
+                );
+              },
+              pageBuilder: (_, __, ___) => const AddNewUser(),
+            ),
+          );
+        },
+        backgroundColor: const Color.fromARGB(255, 248, 248, 248),
+        child: const Icon(Icons.add, color: Colors.black),
+      ),
     );
   }
 
@@ -125,7 +148,7 @@ class _HomeViewState extends State<HomeView> {
         return Future.value();
       },
       child: ScrollablePositionedList.builder(
-        physics: const BouncingScrollPhysics(), 
+        physics: const BouncingScrollPhysics(),
         itemCount: state.users.length,
         itemBuilder: (context, index) {
           final user = state.users[index];
