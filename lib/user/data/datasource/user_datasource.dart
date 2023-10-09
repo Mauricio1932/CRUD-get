@@ -85,26 +85,44 @@ class ApiUserDatasourceImp implements UserDataSource {
   Future<List<User>> userCreate(user) async {
     final response;
     Dio dio = Dio();
-    try {
-      response = await dio.post(
-        userCreateUrl,
-        data: {
-          'nombre': user.nombre,
-          'apellido': user.apellido,
-        },
-      );
-    } catch (e) {
-      print("Error: $e");
-      throw Exception("Failed to log in");
-    }
+    isInternrtConnect();
+    isInternetConnect();
+    var body;
+    bool success = false;
+    print("¿Hay internet? : $isInternetConnect");
 
-    if (response.statusCode == 200) {
+    if (isInternetConnect.isTrue) {
+      try {
+        response = await dio.post(
+          userCreateUrl,
+          data: {
+            'nombre': user.nombre,
+            'apellido': user.apellido,
+          },
+        );
+      } catch (e) {
+        print("Error: $e");
+        throw Exception("Failed to create");
+      }
+
+      body = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        print("Status 200 OK");
+        success = true;
+
+        // return response.data; // Ahora el tipo de retorno es String
+      } else {
+        print("Error en crear, estado: ${response.statusCode}");
+        throw Exception('Failed to create user');
+      }
+    }
+    if (success) {
       print("Status 200 OK");
 
-      return response.data; // Ahora el tipo de retorno es String
+      return body.data; // Ahora el tipo de retorno es String
     } else {
-      print("Error en el login, estado: ${response.statusCode}");
-      throw Exception('Failed to log in');
+      // print("Error en el login, estado: ${response.statusCode}");sss
+      throw Exception('Failed to connection');
     }
   }
 

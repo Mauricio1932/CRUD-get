@@ -43,7 +43,7 @@ class _HomeViewState extends State<HomeView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Problem loading products'),
+                Text(state.error),
                 const SizedBox(
                   height: 10,
                 ),
@@ -75,7 +75,7 @@ class _HomeViewState extends State<HomeView> {
           ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             PageRouteBuilder(
               transitionsBuilder:
@@ -197,7 +197,7 @@ class _HomeViewState extends State<HomeView> {
   void viewUser(userId) {
     // print("id send $userId");
     context.read<UserBloc>().add(ViewUser(userId));
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         transitionsBuilder: (context, animation, secondaryAnimation, child) {

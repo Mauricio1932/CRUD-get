@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/user.dart';
 import '../bloc/bloc/user_bloc.dart';
+import 'home_view.dart';
 
 class DetailsView extends StatefulWidget {
   const DetailsView(userId, {Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _DetailsViewState extends State<DetailsView> {
     apellidoController = TextEditingController();
   }
 
-    int valorID = 0;
+  int valorID = 0;
   @override
   Widget build(BuildContext context) {
     final userContent = context.select<UserBloc, List<User>>((b) => b
@@ -52,7 +53,6 @@ class _DetailsViewState extends State<DetailsView> {
                 return Column(
                   children: [
                     const SizedBox(height: 150),
-                      
                     Card(
                       key: ValueKey(user.id),
                       child: Column(
@@ -112,7 +112,6 @@ class _DetailsViewState extends State<DetailsView> {
                         onPressed: () {
                           Navigator.pop(context); // Cierra la alerta}
                           updateUserData();
-
                         },
                         child: Text('OK'),
                       ),
@@ -149,8 +148,6 @@ class _DetailsViewState extends State<DetailsView> {
             backgroundColor: const Color.fromARGB(255, 248, 248, 248),
             child: const Icon(Icons.delete_outline, color: Colors.black),
           ),
-        
-        
         ],
       ),
     );
@@ -164,10 +161,25 @@ class _DetailsViewState extends State<DetailsView> {
           id: id),
     ];
     context.read<UserBloc>().add(CreateNewUser(user[0]));
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation), // Agrega ".animate(animation)" aquí
+            child: child,
+          );
+        },
+        pageBuilder: (_, __, ___) => HomeView(),
+      ),
+    );
   }
 
   void deleteUser() {
-    print("delete method");
+    // print("delete method");
     List<User> user = [
       User(
           nombre: nombreController.text,
@@ -175,10 +187,25 @@ class _DetailsViewState extends State<DetailsView> {
           id: valorID),
     ];
     context.read<UserBloc>().add(DeleteUser(user[0]));
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation), // Agrega ".animate(animation)" aquí
+            child: child,
+          );
+        },
+        pageBuilder: (_, __, ___) => HomeView(),
+      ),
+    );
   }
 
   void updateUserData() {
-    print("actualizar metodo");
+    // print("actualizar metodo");
     List<User> user = [
       User(
           nombre: nombreController.text,
@@ -186,5 +213,20 @@ class _DetailsViewState extends State<DetailsView> {
           id: valorID),
     ];
     context.read<UserBloc>().add(UpdteUser(user[0]));
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation), // Agrega ".animate(animation)" aquí
+            child: child,
+          );
+        },
+        pageBuilder: (_, __, ___) => HomeView(),
+      ),
+    );
   }
 }

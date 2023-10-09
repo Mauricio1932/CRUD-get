@@ -1,6 +1,8 @@
 import 'package:bloc_use/user/presentation/bloc/bloc/user_event.dart';
+import 'package:bloc_use/user/presentation/view/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../../domain/entities/user.dart';
 import '../bloc/bloc/user_bloc.dart';
@@ -100,6 +102,21 @@ class _AddNewUserState extends State<AddNewUser> {
           id: 0),
     ];
     context.read<UserBloc>().add(CreateNewUser(user[0]));
-    // print("${user[0].nombre}");
+    // context.read<UserBloc>().add(GetUserRequest());
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(animation), // Agrega ".animate(animation)" aquí
+            child: child,
+          );
+        },
+        pageBuilder: (_, __, ___) => HomeView(),
+      ),
+    );
   }
 }

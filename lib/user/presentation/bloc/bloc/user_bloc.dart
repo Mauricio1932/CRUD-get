@@ -13,8 +13,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final DeleteUserUseCase deleteUserUseCase;
   final UpdateUserUsecase updateUserUsecase;
 
-  UserBloc(this.userUsecase, this.createUserUsecase, this.deleteUserUseCase, this.updateUserUsecase,)
-      : super(const UserState()) {
+  UserBloc(
+    this.userUsecase,
+    this.createUserUsecase,
+    this.deleteUserUseCase,
+    this.updateUserUsecase,
+  ) : super(const UserState()) {
     on<GetUserRequest>(_handleLocalesRecuested);
     on<ViewUser>(_handleviewuser);
     on<RemoveViewUser>(_handleRemoveuser);
@@ -92,12 +96,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         ),
       );
     } catch (error) {
+      // throw Exception("Error inesperado: $error");
+      print('${UserRequest.requestFailure}${error.toString()}');
       emit(state.copyWith(
         usersStatus: UserRequest.requestFailure,
+        error: error.toString()
+        // usersStatus: '${UserRequest.requestFailure}${error.toString()}',
       ));
     }
   }
-  
+
   Future<void> _handleUpdateUser(
     event,
     Emitter<UserState> emit,
@@ -119,6 +127,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (error) {
       emit(state.copyWith(
         usersStatus: UserRequest.requestFailure,
+        error: error.toString()
       ));
     }
   }

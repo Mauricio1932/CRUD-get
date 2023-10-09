@@ -17,8 +17,8 @@ class CreateUserUsecase {
         throw Exception('La lista de users está vacía');
       }
     } catch (e) {
-      print('Error al obtener users: $e');
-      throw e; // Puedes relanzar la excepción si lo prefieres
+      // print('Error: $e');
+      throw e; // Puedes rel
     }
   }
 }
