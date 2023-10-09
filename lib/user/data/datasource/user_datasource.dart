@@ -128,29 +128,44 @@ class ApiUserDatasourceImp implements UserDataSource {
 
   @override
   Future<List<User>> updateUser(user) async {
-    print("funcion put");
     final response;
     Dio dio = Dio();
-    try {
-      response = await dio.put(
-        '$updateuserUrl${user.id}',
-        data: {
-          'nombre': user.nombre,
-          'apellido': user.apellido,
-        },
-      );
-    } catch (e) {
-      print("Error: $e");
-      throw Exception("Failed to log in");
-    }
+    isInternrtConnect();
+    isInternetConnect();
+    var body;
+    bool success = false;
+    print("¿Hay internet? : $isInternetConnect");
 
-    if (response.statusCode == 200) {
+    if (isInternetConnect.isTrue) {
+      try {
+        response = await dio.put(
+          '$updateuserUrl${user.id}',
+          data: {
+            'nombre': user.nombre,
+            'apellido': user.apellido,
+          },
+        );
+      } catch (e) {
+        print("Error: $e");
+        throw Exception("Failed to log in");
+      }
+
+      if (response.statusCode == 200) {
+        print("Status 200 OK");
+        success = true;
+        // return response.data; // Ahora el tipo de retorno es String
+      } else {
+        // print("Error en , estado: ${response.statusCode}");
+        throw Exception('Failed to update User');
+      }
+    }
+    if (success) {
       print("Status 200 OK");
 
-      return response.data; // Ahora el tipo de retorno es String
+      return body.data; // Ahora el tipo de retorno es String
     } else {
-      print("Error en el login, estado: ${response.statusCode}");
-      throw Exception('Failed to log in');
+      // print("Error en el login, estado: ${response.statusCode}");sss
+      throw Exception('Failed to connection');
     }
   }
 
